@@ -15,7 +15,7 @@ const app = express();
 const posts = [];
 
 
-mongoose.connect(process.env.url, {useNewUrlParser: true});
+mongoose.connect(process.env.URL, {useNewUrlParser: true});
 
 const postSchema = {
     title : String,
