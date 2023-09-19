@@ -1,0 +1,21 @@
+<%- include("partials/header"); -%>
+
+<h1>Edit Post</h1>
+<form action="/updatepost/<%= post._id %>" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>Title</label>
+        <input class="form-control" type="text" name="editTitle" value="<%= post.title %>">
+        <label>Post Description</label>
+        <textarea class="form-control" name="editBody" rows="5" cols="30"><%= post.content %></textarea>
+        
+        <!-- Input field for uploading a new image -->
+        <label for="editImage">Upload New Image</label>
+        <input type="file" id="editImage" name="editImage">
+    </div>
+    <button class="btn btn-primary" type="submit" name="button">Save Changes</button>
+</form>
+
+<form action="/deletepost/<%= post._id %>" method ="post" enctype="multipart/form-data">
+    <button class = "btn btn-danger"type= "submit"name="delete">Delete Post</button>
+</form>
+<%- include("partials/footer"); -%>

@@ -1,0 +1,20 @@
+<%- include("partials/header"); -%>
+
+<h1>Edit Posts</h1>
+<% posts.forEach(function(post) { %>
+    <div>
+        <h2><%= post.title %></h2>
+        <img src="data:image/<%= post.img.contentType %>;base64,<%= post.img.data %>" alt="Post Image" style="max-width: 300px; max-height: 300px;">
+        <% if (post.content) { %>
+            <p><%= post.content.substring(0, 100) + " ..." %></p>
+        <% } else { %>
+            <p>No content available</p>
+        <% } %>
+        <a href="/editpost/<%= post._id %>">Edit</a>
+    </div>
+<% }) %>
+<a href="/logout">Logout</a>
+
+
+<%- include("partials/footer"); -%>
+
