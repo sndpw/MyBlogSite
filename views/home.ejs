@@ -8,8 +8,8 @@
          <h1><%=post.title%></h1>
          <img src="data:image/<%= post.img.contentType %>;base64,<%= post.img.data %>" alt="Post Image" style="max-width: 600px; max-height: 200px;">
          <p>
-         <%=post.content.substring(0, 100) + " ..."%>
-         <a href="/posts/<%=post.title%>">Read More</a>
+            <%=post.content.substring(0, 100) + " ..."%>
+            <a href="/posts/<%=post.title%>">Read More</a>
          </p>
      
          <% }) %>
