@@ -7,8 +7,6 @@ const _ = require("lodash");
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
-const crypto = require('crypto');
-
 
 
 const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -79,26 +77,53 @@ app.get("/login", function(req, res){
     res.render("login");
 })
 
+app.get("/browse", function(req, res){
+    Post.find({}).then(function(posts){
+        res.render("browse", {homeContent:homeStartingContent, posts:posts});
+    }).catch(function(err){
+        console.log("Error");
+    });
+})
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads/'); // Path where files will be stored
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // Unique filename
+      cb(null, Date.now() + '-' + file.originalname); // Unique filename
     }
 });
 
 const upload = multer({ storage: storage }); // Use the storage configuration
 
-app.get("/posts/:postTitle", function(req, res){
+/*app.get("/posts/:postTitle", function(req, res){
     const requestedPostTitle = (req.params.postTitle);
     Post.findOne({title:requestedPostTitle}).then(function(post){
             res.render("post",{pTitle:post.title, pBody:post.content, pImg: post.img});
         }
     ).catch(function(err){
-        console.log("Error");
+        console.log("Error",err);
     })
+});*/
+
+app.get("/posts/:postTitle", function(req, res){
+    const requestedPostTitle = (req.params.postTitle);
+    Post.findOne({ title: requestedPostTitle }).then(function(post) {
+        // Generate the postLink variable based on the post's URL
+        const postLink = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+        res.render("post", {
+            pTitle: post.title,
+            pBody: post.content,
+            pImg: post.img,
+            postLink: postLink // Pass the postLink variable to the template
+        });
+    }).catch(function(err) {
+        console.log("Error", err);
+    });
 });
+
+
 
 
 function ensureAuthenticated(req, res, next) {
@@ -210,7 +235,7 @@ app.post("/updatepost/:postId", upload.single("editImage"), function(req, res) {
 });
 
 // Create a route for deleting posts
-/*app.post("/deletepost/:postId", function(req, res) {
+app.post("/deletepost/:postId", function(req, res) {
     if (flag === 1) {
         const postId = req.params.postId;
 
@@ -227,53 +252,6 @@ app.post("/updatepost/:postId", upload.single("editImage"), function(req, res) {
             })
             .catch(function(err) {
                 console.log("Error deleting the post:", err);
-                res.redirect("/editposts");
-            });
-    } else {
-        res.redirect("/login"); // Redirect to login if not authenticated
-    }
-});*/
-
-
-// Create a route for deleting posts
-app.post("/deletepost/:postId", function(req, res) {
-    if (flag === 1) {
-        const postId = req.params.postId;
-
-        // Find the post to get the image filename
-        Post.findById(postId)
-            .then(function(deletedPost) {
-                if (!deletedPost) {
-                    console.log("Post not found.");
-                    res.redirect("/editposts");
-                    return;
-                }
-                
-                // Delete the associated image file from the 'uploads' folder
-                if (deletedPost.img && deletedPost.img.data) {
-                    const imagePath = path.join(__dirname, 'uploads/', deletedPost.img.data);
-                    fs.unlink(imagePath, (err) => {
-                        if (err) {
-                            console.error("Error deleting image");
-                        } else {
-                            console.log("Image deleted successfully");
-                        }
-                    });
-                }
-                
-                // Now, delete the post from the database
-                Post.findByIdAndRemove(postId)
-                    .then(function() {
-                        console.log("Post deleted successfully");
-                        res.redirect("/editposts");
-                    })
-                    .catch(function(err) {
-                        console.log("Error deleting the post:");
-                        res.redirect("/editposts");
-                    });
-            })
-            .catch(function(err) {
-                console.log("Error finding the post:", err);
                 res.redirect("/editposts");
             });
     } else {
