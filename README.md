@@ -44,8 +44,9 @@ The website is hosted on Render. You can access it using the provided link.
    Create a .env file in the root directory and add the following variables:
 
    ```bash
-   PORT=3000
-   MONGODB_URI=your_mongodb_uri
+   EMAIL=YOUR_EMAIL
+   PASS=YOUR_PASSWORD
+   URL=YOUR_MONGODB_URL
    ```
 
    Replace your_mongodb_uri with your MongoDB connection string and your_session_secret with a secret key for session management.
