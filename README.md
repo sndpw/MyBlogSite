@@ -31,7 +31,7 @@ The website is hosted on Render. You can access it using the provided link.
 1. Clone the repository.
   
    ```bash
-   git clone https://github.com/your-username/Blogify.git
+   git clone https://github.com/sndpw/MyBlogSite.git
    
 2. Install dependencies:
 
